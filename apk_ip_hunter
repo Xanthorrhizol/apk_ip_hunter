@@ -1,0 +1,22 @@
+#!/usr/bin/bash
+if [ $# -ne 1 ]; then
+	echo -e "\nUsage: $0 <filename>\n\n"
+	exit -1
+else
+	mkdir unzipped_apk
+	cd unzipped_apk
+	cp ../$1 ./payload.apk
+	unzip payload.apk 1>/dev/null 
+	if [ -f *.dex ]; then
+		export filename=$(ls | grep *.dex)
+		echo -e "\nDetected plain ips\n"
+		strings $filename | grep -E "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"
+		echo ""
+		echo -e "\nDetected Metasploit payload(backdoor) ip&port\n"
+		strings $filename | grep tcp
+	else
+		echo -e "\nERROR : There is no dex file in the apk file\n\n"
+	fi
+fi
+cd ..
+rm -rf unzipped_apk
