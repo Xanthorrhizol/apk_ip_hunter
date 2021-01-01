@@ -4,8 +4,8 @@ if [ $# -ne 1 ]; then
 	exit -1
 else
 	mkdir unzipped_apk
+	cp $1 unzipped_apk/payload.apk
 	cd unzipped_apk
-	cp ../$1 ./payload.apk
 	unzip payload.apk 1>/dev/null 
 	if [ -f *.dex ]; then
 		export filename=$(ls | grep *.dex)
