@@ -8,12 +8,22 @@ else
 	cp ../$1 ./payload.apk
 	unzip payload.apk 1>/dev/null 
 	if [ -f *.dex ]; then
+		echo "-----------------------------------"
 		export filename=$(ls | grep *.dex)
-		echo -e "\nDetected plain ips\n"
-		strings $filename | grep -E "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"
+		echo -e "\n\033[01;33mDetected plain ip\033[00m\n"
+		ip=$(strings $filename | grep -Eo "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}")
+		echo $ip
+		echo -e "\n\033[01;33mTraceroute Result\033[00m\n"
+		traceroute $ip
 		echo ""
-		echo -e "\nDetected Metasploit payload(backdoor) ip&port\n"
-		strings $filename | grep tcp
+		echo -e "\n\033[01;31mDetected Metasploit payload(backdoor) ip&port\033[00m\n"
+		ip_raw=$(strings $filename | grep tcp)
+		ip=$(echo $ip_raw | grep -Eo "[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}")
+		port=$(echo $ip_raw | grep -Eo ":[0-9]{1,5}" | grep -Eo "[0-9]{1,5}")
+		echo -e "\nip : $ip / port : $port"
+		echo -e "\n\033[01;31mTraceroute Result\033[00m\n"
+		traceroute $ip
+		echo "-----------------------------------"
 	else
 		echo -e "\nERROR : There is no dex file in the apk file\n\n"
 	fi
