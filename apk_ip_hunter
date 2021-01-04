@@ -55,8 +55,3 @@ else
 		fi
 	fi
 fi
-unset file
-unset files
-unset ip
-unset ip_raw
-unset port
